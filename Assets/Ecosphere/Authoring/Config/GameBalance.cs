@@ -46,6 +46,16 @@ namespace Ecosphere.Authoring
             public float SelectionPressure = 1f;
         }
 
+        [System.Serializable]
+        public class PlanetSection
+        {
+            public float Radius = 1000f;
+            [Range(0, 6)] public int Subdivision = 5; // 10242 cells; level 6 = 40962
+            [Range(-1, 1)] public float SeaLevel = 0.03f;
+            [Range(0, 2)] public float MountainAmplitude = 0.6f;
+            [Range(0, 90)] public float IceCapLatitude = 72f;
+        }
+        public PlanetSection Planet = new PlanetSection();
         public ClimateSection Climate = new ClimateSection();
         public PlantsSection Plants = new PlantsSection();
         public AnimalsSection Animals = new AnimalsSection();

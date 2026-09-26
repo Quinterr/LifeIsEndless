@@ -12,7 +12,8 @@
         "Unity.Mathematics",
         "Unity.PerformanceTesting",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Ecosphere.Planet"
     ],
     "includePlatforms": [
         "Editor"

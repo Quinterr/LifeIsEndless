@@ -109,3 +109,9 @@ Assets/
 │   └── Planet/ Climate/ Genetics/ Life/ Ecology/ UX/   ← stage stubs
 └── Tests/                       EditMode + PlayMode + performance tests
 ```
+
+## Planet work in progress
+
+Main now starts seed-driven primal icosphere generation (default 10,242 cells) with
+vertex-coloured chunk meshes, a queryable per-cell sunlight buffer and orbit camera.
+See [Docs/planet.md](Docs/planet.md) for the grid, ownership and outstanding stage-02 gaps.

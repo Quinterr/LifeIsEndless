@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 103}
   - component: {fileID: 104}
   - component: {fileID: 105}
+  - component: {fileID: 107}
+  - component: {fileID: 108}
   m_Layer: 0
   m_Name: Bootstrap
   m_TagString: Untagged
@@ -130,5 +132,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a1b0000000000000000000000000f03, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7100000000000000000000000000001, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7100000000000000000000000000002, type: 3}
   m_Name:
   m_EditorClassIdentifier:
