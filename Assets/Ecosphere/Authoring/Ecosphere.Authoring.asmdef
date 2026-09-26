@@ -9,7 +9,8 @@
         "Unity.Entities",
         "Unity.Entities.Hybrid",
         "Unity.Mathematics",
-        "Unity.Transforms"
+        "Unity.Transforms",
+        "Ecosphere.Planet"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

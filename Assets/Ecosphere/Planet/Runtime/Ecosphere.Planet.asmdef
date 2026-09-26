@@ -1,0 +1,1 @@
+{"name":"Ecosphere.Planet","rootNamespace":"Ecosphere.Planet","references":["Ecosphere.Core.ECS","Ecosphere.Core.Simulation","Unity.Entities","Unity.Collections","Unity.Mathematics","Unity.Burst"],"noEngineReferences":true}
