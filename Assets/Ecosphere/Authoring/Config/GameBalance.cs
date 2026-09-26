@@ -13,9 +13,9 @@ namespace Ecosphere.Authoring
         [System.Serializable]
         public class ClimateSection
         {
-            [Tooltip("Placeholder — filled by stage 03 (Climate).")]
+            [Tooltip("Scales the land and ocean temperature response rates.")]
             public float TemperatureScale = 1f;
-            [Tooltip("Placeholder — filled by stage 03 (Climate).")]
+            [Tooltip("Scales pressure-gradient wind in the climate model.")]
             public float WindScale = 1f;
         }
 

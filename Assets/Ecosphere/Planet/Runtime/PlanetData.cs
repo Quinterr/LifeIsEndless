@@ -10,9 +10,13 @@ namespace Ecosphere.Planet
         public float Elevation, Latitude, Longitude;
         public Biome Biome;
         public byte Land, Continent;
-        // Stage 03 Climate writes weather + soil + snow; stage 05 Life writes biomass/detritus.
+        // Climate is the sole writer of these fields after terrain initialization.
         public float Temperature, Pressure, Humidity, SoilMoisture, SnowCover, Fertility, Biomass, Detritus;
-        public float3 Wind;
+        public float CloudCover, Precipitation, Storminess, OceanTemperature, Nutrient;
+        public float DryTicks, TemperatureAnomalyTicks;
+        public float TemperatureInsolationTerm, TemperatureAdvectionTerm, EvaporationTerm, OrographicLiftTerm;
+        public float TemperatureTrend, HumidityTrend, SoilMoistureTrend;
+        public float3 Wind, OceanCurrent;
         public float Insolation;
     }
     public interface IBiomeClassifier { Biome Classify(float elevation, float latitude, float moisture); }
