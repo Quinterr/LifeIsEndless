@@ -1,0 +1,32 @@
+{
+    "name": "Ecosphere.Tests",
+    "rootNamespace": "Ecosphere.Tests",
+    "references": [
+        "Ecosphere.Core.Simulation",
+        "Ecosphere.Core.ECS",
+        "Ecosphere.Presentation",
+        "Ecosphere.Authoring",
+        "Unity.Burst",
+        "Unity.Collections",
+        "Unity.Entities",
+        "Unity.Mathematics",
+        "Unity.PerformanceTesting",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
