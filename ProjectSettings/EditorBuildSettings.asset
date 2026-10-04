@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OrganismViewer.unity
     guid: 7a2c0000000000000000000000000004
+  - enabled: 1
+    path: Assets/Scenes/StressWorld.unity
+    guid: 8f4a0000000000000000000000000005
   m_configObjects: {}
