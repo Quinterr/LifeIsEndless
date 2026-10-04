@@ -1,0 +1,266 @@
+key,text,comment
+action.bask,Basking,stage-07
+action.drink,Drinking,stage-07
+action.explore,Exploring,stage-07
+action.flee,Fleeing,stage-07
+action.forage,Foraging,stage-07
+action.graze,Grazing,stage-07
+action.grow,Growing,stage-07
+action.hunt,Hunting,stage-07
+action.migrate,Migrating,stage-07
+action.photosynthesize,Photosynthesizing,stage-07
+action.rest,Resting,stage-07
+action.scavenge,Scavenging,stage-07
+action.seekMate,Seeking a mate,stage-07
+action.shelter,Taking shelter,stage-07
+action.sleep,Sleeping,stage-07
+action.socialize,Socializing,stage-07
+action.wander,Wandering,stage-07
+app.title,Ecosphere,stage-07
+death.cataclysm,Cataclysm,stage-07
+death.crowding,Crowding,stage-07
+death.dehydration,Dehydration,stage-07
+death.drought,Drought,stage-07
+death.eggPredation,Egg predation,stage-07
+death.exhaustion,Exhaustion,stage-07
+death.freezing,Freezing,stage-07
+death.heat,Overheating,stage-07
+death.oldAge,Old age,stage-07
+death.predation,Predation,stage-07
+death.starvation,Starvation,stage-07
+death.storm,Severe storm,stage-07
+feed.deaths,{0} deaths,stage-07
+feed.empty,Nothing has happened yet,stage-07
+feed.filter.all,All,stage-07
+feed.filter.evolution,Evolution,stage-07
+feed.filter.god,God,stage-07
+feed.filter.life,Deaths,stage-07
+feed.filter.weather,Weather,stage-07
+feed.severity,Severity,stage-07
+feed.severity.catastrophic,catastrophic,stage-07
+feed.severity.minor,minor,stage-07
+feed.severity.moderate,moderate,stage-07
+feed.severity.severe,severe,stage-07
+feed.teleport,Go there,stage-07
+feed.title,World events,stage-07
+feed.trend.falling,falling,stage-07
+feed.trend.rising,rising,stage-07
+feed.trend.stable,stable,stage-07
+god.amount,Amount,stage-07
+god.cancelTarget,No target selected,stage-07
+god.catastrophe,Catastrophe,stage-07
+god.catastrophe.help,"Meteorite: heat spike, dust cooling and deaths",stage-07
+god.climateNudge,Climate nudge,stage-07
+god.climateNudge.help,"Warm, cool or moisten one region for a few days",stage-07
+god.flood,Flood,stage-07
+god.kingdom.animal,Animals,stage-07
+god.kingdom.plant,Plants,stage-07
+god.logged,Logged in the event feed,stage-07
+god.lower,Lower land,stage-07
+god.moisture,Moisture,stage-07
+god.radius,Radius,stage-07
+god.raise,Raise land,stage-07
+god.seedLife,Seed life,stage-07
+god.seedLife.help,Place new organisms in a region,stage-07
+god.speciesAny,Any species,stage-07
+god.summonWeather,Summon weather,stage-07
+god.summonWeather.help,Attach a weather event to a region,stage-07
+god.targetHint,Click the planet to choose a target,stage-07
+god.temperature,Temperature,stage-07
+god.terrain,Terrain,stage-07
+god.terrain.help,"Raise, lower or flood a region",stage-07
+god.timeJump,Time jump,stage-07
+god.timeJump.help,Fast-forward to a target date,stage-07
+god.title,God tools,stage-07
+god.undo,Undo last action,stage-07
+god.wipeRegion,Wipe region,stage-07
+god.wipeRegion.help,Kill everything in the radius,stage-07
+guard.disabled,Safe mode: heavy effects disabled after a crash,stage-07
+guard.report,Crash report written to {0},stage-07
+hud.clock,Clock,stage-07
+hud.date,Date,stage-07
+hud.day,Day,stage-07
+hud.generation,year,stage-07
+hud.paused,Paused,stage-07
+hud.perf,Performance,stage-07
+hud.population,Organisms,stage-07
+hud.running,Running,stage-07
+hud.scale,Time scale,stage-07
+hud.season,Season,stage-07
+hud.seed,Seed,stage-07
+hud.species,Species,stage-07
+hud.ticks,ticks,stage-07
+hud.version,Version,stage-07
+hud.weather,Weather,stage-07
+hud.wind,Wind,stage-07
+inspector.aboveAverage,above average,stage-07
+inspector.action,Doing,stage-07
+inspector.age,Age,stage-07
+inspector.biome,Biome,stage-07
+inspector.compare,Compare,stage-07
+inspector.empty,Click a creature on the planet to inspect it,stage-07
+inspector.environment,Environment,stage-07
+inspector.follow,Follow,stage-07
+inspector.generation,Generation,stage-07
+inspector.genome,Genome,stage-07
+inspector.lineage,Lineage,stage-07
+inspector.needs,Needs,stage-07
+inspector.parents,Parents,stage-07
+inspector.phenotype,Phenotype,stage-07
+inspector.pin,Pin,stage-07
+inspector.species,Species,stage-07
+inspector.stage,Stage,stage-07
+inspector.status,Status,stage-07
+inspector.title,Inspect,stage-07
+inspector.unpin,Unpin,stage-07
+inspector.why,Because,stage-07
+"key,text,comment","key,text,comment",stage-07
+locale.en,English,stage-07
+locale.ru,Русский,stage-07
+need.energy,Energy,stage-07
+need.exploration,Exploration,stage-07
+need.hydration,Hydration,stage-07
+need.reproduction,Reproduction,stage-07
+need.rest,Rest,stage-07
+need.safety,Safety,stage-07
+need.social,Social,stage-07
+need.thermal,Thermal comfort,stage-07
+onboarding.body,You are looking at a living planet.,stage-07
+onboarding.dismiss,Start observing,stage-07
+onboarding.title,Welcome to Ecosphere,stage-07
+overlay.biomes,Biomes,stage-07
+overlay.currents,Currents,stage-07
+overlay.fertility,Fertility,stage-07
+overlay.humidity,Humidity,stage-07
+overlay.insolation,Insolation,stage-07
+overlay.legend,Legend,stage-07
+overlay.none,None,stage-07
+overlay.population,Population,stage-07
+overlay.pressure,Pressure,stage-07
+overlay.snow,Snow,stage-07
+overlay.soil,Soil moisture,stage-07
+overlay.storminess,Storminess,stage-07
+overlay.streamlines,Streamlines show the vector field,stage-07
+overlay.temperature,Temperature,stage-07
+overlay.title,Overlays,stage-07
+overlay.wind,Wind,stage-07
+panel.evolution,Evolution,stage-07
+panel.feed,Events,stage-07
+panel.god,God tools,stage-07
+panel.inspector,Creature,stage-07
+panel.saves,Saves,stage-07
+panel.settings,Settings,stage-07
+panel.species,Species,stage-07
+panel.stats,Stats,stage-07
+photo.capture,Capture PNG,stage-07
+photo.dof,Depth of field,stage-07
+photo.exposure,Exposure,stage-07
+photo.fov,Field of view,stage-07
+photo.freeCamera,Free camera,stage-07
+photo.guides,Guides,stage-07
+photo.hint,WASD fly (Shift fast) · RMB look · G grid · Space capture · speed {0},stage-07
+photo.saturation,Saturation,stage-07
+photo.saved,Saved {0},stage-07
+photo.timeOfDay,Time of day,stage-07
+photo.title,Photo mode,stage-07
+photo.watermark,Watermark,stage-07
+quality.high,High,stage-07
+quality.low,Low,stage-07
+quality.medium,Medium,stage-07
+quality.ultra,Ultra,stage-07
+save.autosave,Autosave,stage-07
+save.autosaveInterval,Autosave interval,stage-07
+save.checksumBad,Snapshot checksum mismatch,stage-07
+save.checksumOk,Rewound to tick {0},stage-07
+save.delete,Delete,stage-07
+save.empty,Empty,stage-07
+save.export,Export,stage-07
+save.failed,Failed: {0},stage-07
+save.generation,World age,stage-07
+save.import,Import,stage-07
+save.load,Load,stage-07
+save.loaded,Loaded {0},stage-07
+save.name,World name,stage-07
+save.now,Save,stage-07
+save.rewind,Rewind,stage-07
+save.rewind.help,"Loads the newest snapshot at or before that moment, then replays it",stage-07
+save.slot,Slot,stage-07
+save.title,Worlds,stage-07
+save.unsaved,Unsaved changes,stage-07
+save.written,Saved to {0},stage-07
+season.autumn,Autumn,stage-07
+season.spring,Spring,stage-07
+season.summer,Summer,stage-07
+season.winter,Winter,stage-07
+settings.ambient,Ambience,stage-07
+settings.autosave,Autosave,stage-07
+settings.locale,Language,stage-07
+settings.master,Master volume,stage-07
+settings.muted,Mute,stage-07
+settings.quality,Quality,stage-07
+settings.showPerf,Show performance chip,stage-07
+settings.title,Settings,stage-07
+settings.ui,Interface,stage-07
+species.anatomy,Anatomy,stage-07
+species.declining,Declining,stage-07
+species.diet,Diet,stage-07
+species.extinct,Extinct,stage-07
+species.population,Population,stage-07
+species.range,Range,stage-07
+species.stable,Stable,stage-07
+species.thriving,Thriving,stage-07
+species.title,Species,stage-07
+species.traits,Traits,stage-07
+stage.adult,Adult,stage-07
+stage.juvenile,Juvenile,stage-07
+stage.old,Senescent,stage-07
+stage.seed,Embryo,stage-07
+stats.avgTraits,Mean traits,stage-07
+stats.biomass,Biomass,stage-07
+stats.births,Births,stage-07
+stats.deaths,Deaths,stage-07
+stats.diversity,Diversity,stage-07
+stats.export,Export CSV,stage-07
+stats.exportDone,Exported to {0},stage-07
+stats.extinctions,Extinctions,stage-07
+stats.title,World KPIs,stage-07
+status.dead,Dead,stage-07
+status.dehydrated,Dehydrated,stage-07
+status.dormant,Dormant,stage-07
+status.exhausted,Exhausted,stage-07
+status.freezing,Freezing,stage-07
+status.overheating,Overheating,stage-07
+status.panicked,Panicked,stage-07
+status.starving,Starving,stage-07
+time.pause,Pause,stage-07
+time.resume,Resume,stage-07
+time.scrub,Scrub,stage-07
+time.scrub.progress,Jumping {0}%,stage-07
+time.scrub.target,Target tick {0},stage-07
+tree.extinction,Extinction,stage-07
+tree.speciation,Speciation,stage-07
+tree.timeAxis,Time →,stage-07
+tree.title,Evolution tree,stage-07
+tree.zoomHint,Click a node to frame the species,stage-07
+ui.apply,Apply,stage-07
+ui.cancel,Cancel,stage-07
+ui.close,Close,stage-07
+ui.none,None,stage-07
+ui.ok,OK,stage-07
+ui.reset,Reset,stage-07
+ui.unknown,Unknown,stage-07
+unit.celsius,°C,stage-07
+unit.count,n,stage-07
+unit.fraction,frac,stage-07
+unit.mm,mm,stage-07
+unit.mps,m/s,stage-07
+unit.none,"",stage-07
+unit.relative,rel,stage-07
+weather.blizzard,Blizzard,stage-07
+weather.clear,Clear,stage-07
+weather.coldwave,Cold wave,stage-07
+weather.drought,Drought,stage-07
+weather.fog,Fog,stage-07
+weather.front,Front,stage-07
+weather.heatwave,Heat wave,stage-07
+weather.storm,Storm,stage-07

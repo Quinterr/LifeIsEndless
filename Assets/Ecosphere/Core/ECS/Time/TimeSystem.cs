@@ -13,6 +13,12 @@ namespace Ecosphere.Core.ECS
     /// Runs at most <see cref="CalendarMath.MaxCatchUpTicksPerFrame"/> ticks per render
     /// frame (death-spiral guard). Game state advances in whole ticks only; multiple
     /// ticks in one frame still produce a single boundary event per crossed boundary.
+    ///
+    /// Stage 07 adds the scrub path: when a <see cref="TimeScrubControl"/> singleton is
+    /// active the clock runs catch-up batches toward its target tick (frame-budget driven,
+    /// see <see cref="ScrubMath"/>), replacing the realtime ticks for that frame. That is
+    /// what makes "jump to date" and post-load fast-forward cheap: the sim advances in
+    /// whole ticks, the presentation throttles rendering, and determinism is unchanged.
     /// </summary>
     [BurstCompile]
     [UpdateInGroup(typeof(TimeSystemGroup))]
@@ -43,8 +49,52 @@ namespace Ecosphere.Core.ECS
             float scale = control.Paused != 0 ? 0f : CalendarMath.TimeScaleForIndex(control.TimeScaleIndex);
 
             var accumulator = new TimeAccumulator(time.Accumulator);
-            int ticks = accumulator.Advance(hostDelta, scale, cfg.SecondsPerTick,
+            bool scrubbing = false;
+            TimeScrubControl scrub = default;
+            if (SystemAPI.TryGetSingleton<TimeScrubControl>(out scrub) && scrub.Active != 0)
+            {
+                if (scrub.TargetTick > time.TotalTicks)
+                {
+                    scrubbing = true;
+                }
+                else
+                {
+                    scrub.Active = 0;
+                    scrub.Progress = 1f;
+                    scrub.TicksThisFrame = 0;
+                    em.SetComponentData(SystemAPI.GetSingletonEntity<TimeScrubControl>(), scrub);
+                }
+            }
+
+            int ticks;
+            if (scrubbing)
+            {
+                double msPerTick = 0.35;
+                if (SystemAPI.TryGetSingleton<SimMetricsData>(out SimMetricsData scrubMetrics) && scrubMetrics.PerTickMsEma > 0.02)
+                {
+                    msPerTick = scrubMetrics.PerTickMsEma;
+                }
+                ScrubStep step = ScrubMath.Plan(time.TotalTicks, scrub.TargetTick, scrub.FrameBudgetMs,
+                    msPerTick, CalendarMath.MaxCatchUpTicksPerFrame, scrub.PauseDuringScrub == 0);
+                ticks = step.TicksThisFrame;
+                scrub.TicksThisFrame = ticks;
+                scrub.Progress = step.Progress;
+                scrub.SecondsRemaining = step.EstimatedSecondsRemaining;
+                if (step.Complete)
+                {
+                    scrub.Active = 0;
+                    scrub.Progress = 1f;
+                }
+                em.SetComponentData(SystemAPI.GetSingletonEntity<TimeScrubControl>(), scrub);
+                // The scrub replaces the realtime backlog: never bank debt while jumping.
+                accumulator.Reset();
+            }
+            else
+            {
+                ticks = accumulator.Advance(hostDelta, scale, cfg.SecondsPerTick,
                                             CalendarMath.MaxCatchUpTicksPerFrame);
+            }
+
             if (ticks <= 0)
             {
                 time.Accumulator = accumulator.BacklogSeconds;

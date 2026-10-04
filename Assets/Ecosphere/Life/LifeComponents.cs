@@ -253,7 +253,9 @@ namespace Ecosphere.Life
         SevereStorm = 7,
         TerritorialCrowding = 8,
         EggPredation = 9,
-        Drought = 10
+        Drought = 10,
+        /// <summary>God-tool catastrophe (meteorite, wipe region). Added in stage 07; append-only.</summary>
+        Cataclysm = 11
     }
 
     /// <summary>

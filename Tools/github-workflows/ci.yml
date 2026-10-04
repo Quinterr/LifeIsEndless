@@ -1,0 +1,148 @@
+# Ecosphere CI — stage 07.
+#
+# Pipeline (matches Docs/manual.md §CI and the acceptance criteria):
+#   1. core   — the net8 headless evolution CLI (engine-free, seconds): scenario suite + seed sweep.
+#   2. tests  — Unity EditMode tests (product core: localization, overlays, saves, budgets).
+#   3. play   — Unity PlayMode tests: boot, life cycle, perf smoke, save/load/rewind determinism
+#               and the crash-guard injected-fault proof.
+#   4. build  — desktop players (IL2CPP) + headless regression build, uploaded as artifacts.
+#
+# The Unity jobs use game-ci and need UNITY_LICENSE / UNITY_EMAIL / UNITY_PASSWORD secrets; the
+# core job needs nothing, so a fork without secrets still gets a meaningful red/green signal.
+#
+# Perf numbers from CI runners are recorded as evidence, never as the shipping budget: the
+# acceptance measurements are captured on the reference machine described in Docs/performance.md.
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  ECOSPHERE_GIT_HASH: ${{ github.sha }}
+  UNITY_VERSION: 6000.0.23f1
+
+jobs:
+  core:
+    name: core scenarios (net8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Evolution scenario suite
+        run: dotnet run --project Tools/EvolutionCli -c Release -- --all --out artifacts/evolution
+      - name: Determinism seed sweep
+        run: dotnet run --project Tools/EvolutionCli -c Release -- --all --seed 7 --out artifacts/evolution-seed7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evolution-output
+          path: artifacts/evolution*/
+
+  editmode:
+    name: EditMode tests
+    runs-on: ubuntu-latest
+    needs: core
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Library-
+      - uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: ${{ env.UNITY_VERSION }}
+          testMode: editmode
+          artifactsPath: artifacts/editmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: EditMode tests
+
+  playmode:
+    name: PlayMode tests (determinism, perf smoke, crash guard)
+    runs-on: ubuntu-latest
+    needs: core
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Library-
+      - uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: ${{ env.UNITY_VERSION }}
+          testMode: playmode
+          artifactsPath: artifacts/playmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: PlayMode tests
+
+  build:
+    name: desktop + headless builds
+    runs-on: ubuntu-latest
+    needs: [editmode, playmode]
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - { name: Linux, method: BuildLinux }
+          - { name: Windows, method: BuildWindows }
+          - { name: macOS, method: BuildMacOS }
+          - { name: Headless, method: BuildHeadless }
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Library-
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: ${{ env.UNITY_VERSION }}
+          targetPlatform: ${{ matrix.target.name == 'macOS' && 'StandaloneOSX' || (matrix.target.name == 'Windows' && 'StandaloneWindows64' || 'StandaloneLinux64') }}
+          buildMethod: Ecosphere.EditorTools.EcosphereBuildMenu.${{ matrix.target.method }}
+          allowDirtyBuild: true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-${{ matrix.target.name }}
+          path: Builds/**
+
+  perf-report:
+    name: perf smoke summary
+    runs-on: ubuntu-latest
+    needs: playmode
+    if: always()
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: playmode-results
+          path: artifacts/playmode
+      - name: Summarize budgets
+        run: |
+          echo "Budgets: 60 FPS @ 2560x1440, <=8 ms sim tick @ 10k organisms, >=20k instances, <2 GB warm, <30 s load, 0 B/frame GC."
+          echo "Machine-readable results come from PerfBudget.Report; see artifacts/playmode."
+          ls -R artifacts || true

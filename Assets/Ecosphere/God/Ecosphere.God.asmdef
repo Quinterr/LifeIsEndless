@@ -1,19 +1,17 @@
 {
-    "name": "Ecosphere.Authoring",
-    "rootNamespace": "Ecosphere.Authoring",
+    "name": "Ecosphere.God",
+    "rootNamespace": "Ecosphere.God",
     "references": [
         "Ecosphere.Core.Simulation",
         "Ecosphere.Core.ECS",
+        "Ecosphere.Planet",
+        "Ecosphere.Life",
+        "Ecosphere.Genetics",
+        "Ecosphere.Presentation",
         "Unity.Burst",
         "Unity.Collections",
         "Unity.Entities",
-        "Unity.Entities.Hybrid",
-        "Unity.Mathematics",
-        "Unity.Transforms",
-        "Ecosphere.Planet",
-        "Ecosphere.UX",
-        "Ecosphere.Life",
-        "Ecosphere.Genetics"
+        "Unity.Mathematics"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
