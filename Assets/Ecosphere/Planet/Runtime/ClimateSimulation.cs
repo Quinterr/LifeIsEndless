@@ -182,6 +182,8 @@ namespace Ecosphere.Planet
         [ReadOnly] public NativeArray<PlanetCell> Source;
         [WriteOnly] public NativeArray<PlanetCell> Destination;
         [ReadOnly] public BlobAssetReference<PlanetTopologyBlob> Topology;
+        /// <summary>Stage-07 god-tool forcing (zeroed when no tool is active).</summary>
+        [ReadOnly] public NativeArray<ClimateForcingCell> Forcing;
         public float YearPhase;
         public float WindScale;
         public float LandResponse;
@@ -320,6 +322,33 @@ namespace Ecosphere.Planet
             c.TemperatureAdvectionTerm = advectionTerm;
             c.EvaporationTerm = evaporation;
             c.OrographicLiftTerm = orographic;
+
+            // Stage-07 god-tool forcing: temporary deltas applied on top of the model, so
+            // the planet keeps its own dynamics and relaxes back once the tool expires.
+            if (Forcing.Length == Source.Length)
+            {
+                ClimateForcingCell forcing = Forcing[index];
+                if (forcing.TemperatureDelta != 0f)
+                {
+                    c.Temperature = math.clamp(c.Temperature + forcing.TemperatureDelta, -100f, 75f);
+                }
+                if (forcing.MoistureDelta != 0f)
+                {
+                    c.Humidity = math.saturate(c.Humidity + forcing.MoistureDelta);
+                    c.SoilMoisture = math.saturate(c.SoilMoisture + forcing.MoistureDelta * .5f);
+                }
+                if (forcing.WindScale != 1f && forcing.WindScale > 0f)
+                {
+                    c.Wind *= forcing.WindScale;
+                }
+                if (forcing.SolarDimming != 0f)
+                {
+                    float dim = 1f - math.saturate(forcing.SolarDimming);
+                    c.Insolation *= dim;
+                    c.TemperatureInsolationTerm *= dim;
+                }
+            }
+
             Destination[index] = c;
         }
 
@@ -336,6 +365,8 @@ namespace Ecosphere.Planet
     {
         private NativeArray<PlanetCell> source;
         private NativeArray<PlanetCell> destination;
+        private NativeArray<ClimateForcingCell> forcing;
+        private uint terrainVersionSeen;
         private ulong lastTick;
         private Entity initializedPlanet;
         private bool initialized;
@@ -361,10 +392,45 @@ namespace Ecosphere.Planet
                 DisposeArrays();
                 source = new NativeArray<PlanetCell>(cells.Length, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
                 destination = new NativeArray<PlanetCell>(cells.Length, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+                forcing = new NativeArray<ClimateForcingCell>(cells.Length, Allocator.Persistent, NativeArrayOptions.ClearMemory);
                 for (int i = 0; i < cells.Length; i++) source[i] = destination[i] = cells[i];
                 initialized = true;
                 initializedPlanet = planetEntity;
                 hasProcessedTick = false;
+                terrainVersionSeen = 0u;
+            }
+
+            // Stage-07: a god terrain edit rewrites elevation/land/biome. The climate step
+            // keeps a private copy of the cells, so refresh the terrain-owned fields when
+            // the revision counter moves instead of every tick.
+            uint terrainVersion = em.HasComponent<TerrainVersion>(planetEntity)
+                ? em.GetComponentData<TerrainVersion>(planetEntity).Value
+                : 0u;
+            if (terrainVersion != terrainVersionSeen)
+            {
+                terrainVersionSeen = terrainVersion;
+                for (int i = 0; i < cells.Length; i++)
+                {
+                    PlanetCell refreshed = source[i];
+                    renewedTerrain(ref cells, ref refreshed, i);
+                    source[i] = refreshed;
+                    destination[i] = refreshed;
+                }
+                hasProcessedTick = false;
+            }
+
+            // Stage-07: copy the god-tool forcing buffer (zero-filled when inactive).
+            if (em.HasBuffer<ClimateForcingCell>(planetEntity) && forcing.Length == cells.Length)
+            {
+                DynamicBuffer<ClimateForcingCell> forcingBuffer = em.GetBuffer<ClimateForcingCell>(planetEntity);
+                if (forcingBuffer.Length == cells.Length)
+                {
+                    for (int i = 0; i < cells.Length; i++) forcing[i] = forcingBuffer[i];
+                }
+                else
+                {
+                    for (int i = 0; i < cells.Length; i++) forcing[i] = default;
+                }
             }
             ClimateConfig config = em.HasComponent<ClimateConfig>(planetEntity) ? em.GetComponentData<ClimateConfig>(planetEntity) : ClimateConfig.Default;
             int interval = math.max(1, config.ClimateTicksPerSimTick);
@@ -391,6 +457,7 @@ namespace Ecosphere.Planet
                         var job = new ClimateStepJob
                         {
                             Source = source, Destination = destination, Topology = planet.Topology,
+                            Forcing = forcing,
                             YearPhase = yearPhase, WindScale = math.max(.01f, config.WindScale),
                             LandResponse = math.clamp(config.TemperatureResponseLand, .00001f, .05f),
                             OceanResponse = math.clamp(config.TemperatureResponseOcean, .00001f, .05f),
@@ -476,11 +543,23 @@ namespace Ecosphere.Planet
             log.Add(new WeatherEventLog { Tick = tick, Type = type, Cell = winner, Strength = math.saturate(strength) });
         }
 
+        /// <summary>Copies terrain-owned fields from the live cell buffer into a cached copy.</summary>
+        private static void renewedTerrain(ref DynamicBuffer<PlanetCell> live, ref PlanetCell cached, int index)
+        {
+            PlanetCell current = live[index];
+            cached.Elevation = current.Elevation;
+            cached.Land = current.Land;
+            cached.Biome = current.Biome;
+            cached.Continent = current.Continent;
+        }
+
         public void OnDestroy(ref SystemState state) => DisposeArrays();
         private void DisposeArrays()
         {
             if (source.IsCreated) source.Dispose();
             if (destination.IsCreated) destination.Dispose();
+            if (forcing.IsCreated) forcing.Dispose();
+            terrainVersionSeen = 0u;
             initialized = false;
         }
     }

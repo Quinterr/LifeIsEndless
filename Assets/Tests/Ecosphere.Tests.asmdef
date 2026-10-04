@@ -15,7 +15,10 @@
         "UnityEditor.TestRunner",
         "Ecosphere.Planet",
         "Ecosphere.Genetics",
-        "Ecosphere.Life"
+        "Ecosphere.Life",
+        "Ecosphere.Persistence",
+        "Ecosphere.UX",
+        "Ecosphere.God"
     ],
     "includePlatforms": [
         "Editor"

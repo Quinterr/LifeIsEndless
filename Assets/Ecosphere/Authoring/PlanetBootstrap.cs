@@ -1,5 +1,7 @@
 using Ecosphere.Core.ECS;
+using Ecosphere.Core.Simulation;
 using Ecosphere.Planet;
+using Ecosphere.UX;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -20,6 +22,23 @@ namespace Ecosphere.Authoring
         private bool[] eventCellFlags;
         private int overlayMode;
         private ulong lastOverlayTick=ulong.MaxValue;
+        private uint terrainVersionSeen;
+        private bool productStarted;
+        private int[] cellPopulation;
+        private int cellPopulationMax;
+
+        /// <summary>Current overlay mode (0 = biome palette). Stage-07 UI drives this.</summary>
+        public int OverlayMode
+        {
+            get => overlayMode;
+            set { if (value != overlayMode) { overlayMode = value; lastOverlayTick = ulong.MaxValue; } }
+        }
+
+        /// <summary>True once terrain meshes exist (the UX waits for this before drawing).</summary>
+        public bool IsTerrainReady => visuals != null && meshes != null;
+
+        /// <summary>Number of rendered terrain chunks (diagnostics).</summary>
+        public int ChunkCount => meshes != null ? meshes.Length : 0;
         private Material terrainMaterial;
         private GameObject visuals;
         private EntityQuery timeQuery;
@@ -131,6 +150,14 @@ namespace Ecosphere.Authoring
         private struct Vertex { public Vector3 Position; public Vector3 Normal; public Color32 Color; }
         private void Update()
         {
+            // Stage 07: hand the player-facing layer the overlay setter once the terrain
+            // exists (Update runs after Start, so the meshes are already built).
+            if(!productStarted)
+            {
+                productStarted=true;
+                ProductBootstrap.Ensure(mode => OverlayMode = mode);
+                OverlayBridge.SetMode = mode => OverlayMode = mode;
+            }
             if(visuals==null) return;
             var world=World.DefaultGameObjectInjectionWorld;
             if(world==null || !world.IsCreated) return;
@@ -139,28 +166,40 @@ namespace Ecosphere.Authoring
             var sun=em.GetComponentData<PlanetState>(planet).SunDirection;
             RenderSettings.ambientLight=new Color(.18f,.24f,.34f);
             if(sunlight!=null) {sunlight.transform.rotation=Quaternion.LookRotation(-(Vector3)sun);sunlight.intensity=1.5f;}
-            int requestedMode=overlayMode;
-            for(int i=0;i<8;i++) if(Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1+i))) requestedMode=i+1;
-            if(Input.GetKeyDown(KeyCode.Alpha0)) requestedMode=0;
-            if(requestedMode!=overlayMode) {overlayMode=requestedMode;lastOverlayTick=ulong.MaxValue;}
+            // Stage 07: overlay selection is owned by the UX layer (PlanetOverlayController);
+            // this renderer only reacts to OverlayMode changes.
             if(!timeQueryReady || timeQuery.IsEmpty || !em.HasBuffer<PlanetCell>(planet)) return;
+
+            // A god terrain edit rewrites elevation: rebuild geometry once per revision.
+            uint terrainVersion = em.HasComponent<TerrainVersion>(planet) ? em.GetComponentData<TerrainVersion>(planet).Value : 0u;
+            if(terrainVersion != terrainVersionSeen)
+            {
+                terrainVersionSeen = terrainVersion;
+                if(terrainVersion > 1u) { RebuildTerrainGeometry(em); lastOverlayTick=ulong.MaxValue; }
+            }
             GameTime clock=timeQuery.GetSingleton<GameTime>();
             if(lastOverlayTick==clock.TotalTicks) return;
             lastOverlayTick=clock.TotalTicks;
             DynamicBuffer<PlanetCell> climateCells=em.GetBuffer<PlanetCell>(planet);
             DynamicBuffer<WeatherEvent> events=em.GetBuffer<WeatherEvent>(planet);
             ClimateSampler sampler=new ClimateSampler(em.GetComponentData<PlanetState>(planet),climateCells,events);
+            if(overlayMode==(int)OverlayMode.PopulationDensity) RefreshPopulationDensity(em,climateCells.Length);
             for(int i=0;i<eventCellFlags.Length;i++) eventCellFlags[i]=false;
             for(int e=0;e<events.Length;e++) if(events[e].Cell>=0 && events[e].Cell<eventCellFlags.Length) eventCellFlags[events[e].Cell]=true;
             for(int i=0;i<climateCells.Length;i++)
             {
                 PlanetCell c=climateCells[i];
                 ClimateSample sample=sampler.Sample(i);
+                float density=cellPopulation!=null && i<cellPopulation.Length
+                    ? (float)cellPopulation[i]/cellPopulationMax
+                    : 0f;
                 Color32 color=overlayMode==0
                     ? (Palette!=null?Palette.ColorFor(c.Biome,c.Latitude,0):WorldPalette.DefaultColor(c.Biome))
-                    : OverlayColor(sample,overlayMode);
+                    : OverlayColor(sample,overlayMode,density);
                 if(overlayMode==8 && eventCellFlags[i]) color=new Color32(255,45,35,255);
-                cellOverlayColors[i]=color;
+                // Smooth cross-fade between overlay switches (stage-07 "smooth blending").
+                Color32 blended=Color32.Lerp(cellOverlayColors[i],color,.35f);
+                cellOverlayColors[i]=blended;
             }
             for(int chunk=0;chunk<meshes.Length;chunk++)
             {
@@ -170,31 +209,109 @@ namespace Ecosphere.Authoring
             }
         }
 
-        private static Color32 OverlayColor(ClimateSample c,int mode)
+        /// <summary>
+        /// Rebuilds chunk vertex positions/normals after a god terrain edit (elevation
+        /// changed). Cell colours are refreshed by the normal overlay pass.
+        /// </summary>
+        private void RebuildTerrainGeometry(EntityManager em)
         {
-            if(mode==1) return Ramp(new Color32(25,65,210,255),new Color32(250,55,25,255),math.saturate((c.Temperature+45f)/85f));
-            if(mode==2)
+            if(meshes==null || vertexCellIds==null || !em.HasBuffer<PlanetCell>(planet)) return;
+            DynamicBuffer<PlanetCell> cells=em.GetBuffer<PlanetCell>(planet);
+            float radius=em.GetComponentData<PlanetState>(planet).Radius;
+            var blob=em.GetComponentData<PlanetState>(planet).Topology;
+            if(!blob.IsCreated) return;
+            for(int chunk=0;chunk<meshes.Length;chunk++)
             {
-                float band=math.round(c.Pressure*28f)/28f;
-                return Ramp(new Color32(30,65,150,255),new Color32(255,205,70,255),math.saturate((band-.32f)/.42f));
+                if(meshes[chunk]==null) continue;
+                int count=vertexCellIds[chunk].Length;
+                var positions=new Vector3[count];
+                var data=Mesh.AllocateWritableMeshData(1);
+                var md=data[0];
+                md.SetVertexBufferParams(count,new UnityEngine.Rendering.VertexAttributeDescriptor(UnityEngine.Rendering.VertexAttribute.Position),
+                    new UnityEngine.Rendering.VertexAttributeDescriptor(UnityEngine.Rendering.VertexAttribute.Normal),
+                    new UnityEngine.Rendering.VertexAttributeDescriptor(UnityEngine.Rendering.VertexAttribute.Color, UnityEngine.Rendering.VertexAttributeFormat.UNorm8,4));
+                md.SetIndexBufferParams(count,UnityEngine.Rendering.IndexFormat.UInt32);
+                var vertices=md.GetVertexData<Vertex>();
+                var indices=md.GetIndexData<uint>();
+                for(int v=0;v<count;v+=3)
+                {
+                    int[] ids=new int[3];
+                    for(int j=0;j<3;j++) ids[j]=vertexCellIds[chunk][v+j];
+                    for(int j=0;j<3;j++)
+                    {
+                        PlanetCell c=cells[ids[j]];
+                        float r=radius*(1+math.max(0,c.Elevation)*.035f);
+                        positions[j]=(Vector3)(blob.Value.Centers[ids[j]]*r);
+                    }
+                    Vector3 normal=Vector3.Cross(positions[1]-positions[0],positions[2]-positions[0]).normalized;
+                    if(Vector3.Dot(normal,positions[0])<0) normal=-normal;
+                    for(int j=0;j<3;j++)
+                    {
+                        int index=v+j;
+                        vertices[index]=new Vertex {Position=positions[j],Normal=normal,Color=overlayColors[chunk][index]};
+                        indices[index]=(uint)index;
+                    }
+                }
+                md.subMeshCount=1;
+                md.SetSubMesh(0,new UnityEngine.Rendering.SubMeshDescriptor(0,count));
+                Mesh.ApplyAndDisposeWritableMeshData(data,meshes[chunk]);
+                meshes[chunk].RecalculateBounds();
             }
-            if(mode==3)
+        }
+
+        /// <summary>
+        /// Overlay colours come from the shared ramp table in Core.Simulation so the mesh and
+        /// the UI legend can never disagree (stage 07 moved them out of this renderer).
+        /// </summary>
+        private static Color32 OverlayColor(ClimateSample c,int mode,float density)
+        {
+            if(mode==0) return new Color32(120,120,120,255);
+            OverlayMode overlay=(OverlayMode)math.clamp(mode,0,OverlayRampMath.ModeCount-1);
+            float value=overlay==OverlayMode.PopulationDensity?density:TintValue(c,overlay);
+            Rgba32 direction=OverlayRampMath.DirectionTint((float)System.Math.Atan2(c.Wind.z,c.Wind.x));
+            Rgba32 color=OverlayRampMath.ColorFor(overlay,value,direction);
+            if(overlay==OverlayMode.Currents && c.IsSubmerged) color=OverlayRampMath.ColorFor(overlay,math.length(c.OceanCurrent),direction);
+            return new Color32(color.R,color.G,color.B,color.A);
+        }
+
+        /// <summary>
+        /// Population density overlay: sums the per-cell species bins maintained by the
+        /// evolution systems (stage 06) so the god view shows where life actually is.
+        /// </summary>
+        private void RefreshPopulationDensity(EntityManager em,int cellCount)
+        {
+            if(cellPopulation==null || cellPopulation.Length!=cellCount) cellPopulation=new int[cellCount];
+            for(int i=0;i<cellPopulation.Length;i++) cellPopulation[i]=0;
+            if(em.HasBuffer<CellSpeciesPopulation>(planet))
             {
-                float speed=math.saturate(c.WindStrength/18f);
-                float east=math.saturate((c.Wind.z+18f)/36f);
-                Color32 direction=Ramp(new Color32(35,190,230,255),new Color32(235,65,205,255),east);
-                return Ramp(new Color32(25,35,70,255),direction,speed);
+                var bins=em.GetBuffer<CellSpeciesPopulation>(planet);
+                for(int i=0;i<bins.Length;i++)
+                {
+                    int cell=bins[i].CellIndex;
+                    if(cell<0 || cell>=cellPopulation.Length) continue;
+                    cellPopulation[cell]+=bins[i].Population;
+                }
             }
-            if(mode==4)
+            cellPopulationMax=1;
+            for(int i=0;i<cellPopulation.Length;i++) if(cellPopulation[i]>cellPopulationMax) cellPopulationMax=cellPopulation[i];
+        }
+
+        private static float TintValue(ClimateSample c,OverlayMode overlay)
+        {
+            switch(overlay)
             {
-                float rain=math.saturate(c.Precipitation/5f);
-                Color32 humid=Ramp(new Color32(155,125,70,255),new Color32(45,100,220,255),c.Humidity);
-                return Ramp(humid,new Color32(245,250,255,255),rain*.8f);
+                case OverlayMode.Temperature: return c.Temperature;
+                case OverlayMode.Pressure: return c.Pressure;
+                case OverlayMode.Wind: return c.WindStrength;
+                case OverlayMode.Humidity: return math.max(c.Humidity,c.Precipitation/5f*.6f);
+                case OverlayMode.SoilMoisture: return c.SoilMoisture;
+                case OverlayMode.Snow: return c.SnowCover;
+                case OverlayMode.Currents: return c.IsSubmerged?math.length(c.OceanCurrent):0f;
+                case OverlayMode.Storminess: return c.Storminess;
+                case OverlayMode.Insolation: return c.Insolation;
+                case OverlayMode.Fertility: return c.Nutrient;
+                default: return 0f;
             }
-            if(mode==5) return Ramp(new Color32(135,75,38,255),new Color32(35,195,75,255),c.SoilMoisture);
-            if(mode==6) return Ramp(new Color32(45,80,115,255),new Color32(250,250,255,255),c.SnowCover);
-            if(mode==7) return c.IsSubmerged?Ramp(new Color32(5,30,85,255),new Color32(40,235,205,255),math.saturate(math.length(c.OceanCurrent)/2.5f)):new Color32(42,52,58,255);
-            return Ramp(new Color32(20,35,80,255),new Color32(250,55,20,255),c.Storminess);
         }
 
         private static Color32 Ramp(Color32 a,Color32 b,float t)

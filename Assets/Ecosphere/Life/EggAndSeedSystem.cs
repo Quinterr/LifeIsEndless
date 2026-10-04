@@ -16,7 +16,6 @@ namespace Ecosphere.Life
     {
         private EntityQuery _storedGenomes;
         private EntityQuery _predators;
-        private int _cursor;
         private ulong _lastProcessedTick;
 
         public void OnCreate(ref SystemState state)
@@ -82,7 +81,9 @@ namespace Ecosphere.Life
             }
             int budget = math.max(1, evolution.MaxEggUpdatesPerTick);
             int updates = math.min(countStored, budget);
-            int start = _cursor % countStored;
+            // Stage 07: the cursor is derived from the tick so a snapshot restore replays the
+            // same stored-genome window (a plain round-robin cursor is history dependent).
+            int start = (int)(clock.TotalTicks % (ulong)countStored);
             for (int offset = 0; offset < updates; offset++)
             {
                 int index = (start + offset) % countStored;
@@ -119,7 +120,6 @@ namespace Ecosphere.Life
                             speciesRecords, eventLog);
                 }
             }
-            _cursor = (start + updates) % math.max(1, countStored);
             stored.Dispose();
             em.SetComponentData(planet, evolution);
         }

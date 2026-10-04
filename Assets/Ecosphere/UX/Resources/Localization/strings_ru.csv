@@ -1,0 +1,266 @@
+key,text,comment
+action.bask,Греется,stage-07
+action.drink,Пьёт,stage-07
+action.explore,Исследует,stage-07
+action.flee,Убегает,stage-07
+action.forage,Собирает корм,stage-07
+action.graze,Пасётся,stage-07
+action.grow,Растёт,stage-07
+action.hunt,Охотится,stage-07
+action.migrate,Мигрирует,stage-07
+action.photosynthesize,Фотосинтезирует,stage-07
+action.rest,Отдыхает,stage-07
+action.scavenge,Падальщик,stage-07
+action.seekMate,Ищет пару,stage-07
+action.shelter,Прячется,stage-07
+action.sleep,Спит,stage-07
+action.socialize,Общается,stage-07
+action.wander,Бродит,stage-07
+app.title,Экосфера,stage-07
+death.cataclysm,Катастрофа,stage-07
+death.crowding,Скученность,stage-07
+death.dehydration,Обезвоживание,stage-07
+death.drought,Засуха,stage-07
+death.eggPredation,Разорение кладок,stage-07
+death.exhaustion,Истощение,stage-07
+death.freezing,Замерзание,stage-07
+death.heat,Перегрев,stage-07
+death.oldAge,Старость,stage-07
+death.predation,Хищничество,stage-07
+death.starvation,Голод,stage-07
+death.storm,Сильный шторм,stage-07
+feed.deaths,{0} смертей,stage-07
+feed.empty,Пока ничего не произошло,stage-07
+feed.filter.all,Все,stage-07
+feed.filter.evolution,Эволюция,stage-07
+feed.filter.god,Бог,stage-07
+feed.filter.life,Смерти,stage-07
+feed.filter.weather,Погода,stage-07
+feed.severity,Серьёзность,stage-07
+feed.severity.catastrophic,катастрофическое,stage-07
+feed.severity.minor,слабое,stage-07
+feed.severity.moderate,умеренное,stage-07
+feed.severity.severe,сильное,stage-07
+feed.teleport,Туда,stage-07
+feed.title,События мира,stage-07
+feed.trend.falling,падение,stage-07
+feed.trend.rising,рост,stage-07
+feed.trend.stable,стабильно,stage-07
+god.amount,Сила,stage-07
+god.cancelTarget,Цель не выбрана,stage-07
+god.catastrophe,Катастрофа,stage-07
+god.catastrophe.help,"Метеорит: всплеск жары, пылевое охлаждение и смерти",stage-07
+god.climateNudge,Климатический толчок,stage-07
+god.climateNudge.help,"Согреть, охладить или увлажнить область на несколько дней",stage-07
+god.flood,Затопить,stage-07
+god.kingdom.animal,Животные,stage-07
+god.kingdom.plant,Растения,stage-07
+god.logged,Записано в ленту событий,stage-07
+god.lower,Опустить землю,stage-07
+god.moisture,Влажность,stage-07
+god.radius,Радиус,stage-07
+god.raise,Поднять землю,stage-07
+god.seedLife,Посеять жизнь,stage-07
+god.seedLife.help,Создать новых организмов в области,stage-07
+god.speciesAny,Любой вид,stage-07
+god.summonWeather,Вызвать погоду,stage-07
+god.summonWeather.help,Привязать погодное событие к области,stage-07
+god.targetHint,"Щёлкните по планете, чтобы выбрать цель",stage-07
+god.temperature,Температура,stage-07
+god.terrain,Рельеф,stage-07
+god.terrain.help,"Поднять, опустить или затопить область",stage-07
+god.timeJump,Прыжок во времени,stage-07
+god.timeJump.help,Перемотать к целевой дате,stage-07
+god.title,Инструменты бога,stage-07
+god.undo,Отменить последнее действие,stage-07
+god.wipeRegion,Очистить область,stage-07
+god.wipeRegion.help,Убить всё в радиусе,stage-07
+guard.disabled,Безопасный режим: тяжёлые эффекты отключены после сбоя,stage-07
+guard.report,Отчёт о сбое записан в {0},stage-07
+hud.clock,Время,stage-07
+hud.date,Дата,stage-07
+hud.day,День,stage-07
+hud.generation,год,stage-07
+hud.paused,Пауза,stage-07
+hud.perf,Производительность,stage-07
+hud.population,Организмы,stage-07
+hud.running,Идёт,stage-07
+hud.scale,Скорость времени,stage-07
+hud.season,Сезон,stage-07
+hud.seed,Сид,stage-07
+hud.species,Виды,stage-07
+hud.ticks,тиков,stage-07
+hud.version,Версия,stage-07
+hud.weather,Погода,stage-07
+hud.wind,Ветер,stage-07
+inspector.aboveAverage,выше среднего,stage-07
+inspector.action,Занятие,stage-07
+inspector.age,Возраст,stage-07
+inspector.biome,Биом,stage-07
+inspector.compare,Сравнить,stage-07
+inspector.empty,"Щёлкните существо на планете, чтобы осмотреть его",stage-07
+inspector.environment,Среда,stage-07
+inspector.follow,Следовать,stage-07
+inspector.generation,Поколение,stage-07
+inspector.genome,Геном,stage-07
+inspector.lineage,Родословная,stage-07
+inspector.needs,Потребности,stage-07
+inspector.parents,Родители,stage-07
+inspector.phenotype,Фенотип,stage-07
+inspector.pin,Закрепить,stage-07
+inspector.species,Вид,stage-07
+inspector.stage,Стадия,stage-07
+inspector.status,Состояние,stage-07
+inspector.title,Осмотр,stage-07
+inspector.unpin,Открепить,stage-07
+inspector.why,Потому что,stage-07
+"key,text,comment","key,text,comment",stage-07
+locale.en,English,stage-07
+locale.ru,Русский,stage-07
+need.energy,Энергия,stage-07
+need.exploration,Исследование,stage-07
+need.hydration,Вода,stage-07
+need.reproduction,Размножение,stage-07
+need.rest,Отдых,stage-07
+need.safety,Безопасность,stage-07
+need.social,Общение,stage-07
+need.thermal,Тепловой комфорт,stage-07
+onboarding.body,Вы смотрите на живую планету.,stage-07
+onboarding.dismiss,Начать наблюдение,stage-07
+onboarding.title,Добро пожаловать в Экосферу,stage-07
+overlay.biomes,Биомы,stage-07
+overlay.currents,Течения,stage-07
+overlay.fertility,Плодородие,stage-07
+overlay.humidity,Влажность,stage-07
+overlay.insolation,Инсоляция,stage-07
+overlay.legend,Легенда,stage-07
+overlay.none,Нет,stage-07
+overlay.population,Плотность населения,stage-07
+overlay.pressure,Давление,stage-07
+overlay.snow,Снег,stage-07
+overlay.soil,Почвенная влага,stage-07
+overlay.storminess,Штормность,stage-07
+overlay.streamlines,Линии показывают векторное поле,stage-07
+overlay.temperature,Температура,stage-07
+overlay.title,Слои,stage-07
+overlay.wind,Ветер,stage-07
+panel.evolution,Эволюция,stage-07
+panel.feed,События,stage-07
+panel.god,Инструменты бога,stage-07
+panel.inspector,Существо,stage-07
+panel.saves,Сохранения,stage-07
+panel.settings,Настройки,stage-07
+panel.species,Виды,stage-07
+panel.stats,Статистика,stage-07
+photo.capture,Сделать PNG,stage-07
+photo.dof,Глубина резкости,stage-07
+photo.exposure,Экспозиция,stage-07
+photo.fov,Угол обзора,stage-07
+photo.freeCamera,Свободная камера,stage-07
+photo.guides,Сетка,stage-07
+photo.hint,WASD — полёт (Shift быстрее) · ПКМ — обзор · G — сетка · Space — снимок · скорость {0},stage-07
+photo.saturation,Насыщенность,stage-07
+photo.saved,Сохранено {0},stage-07
+photo.timeOfDay,Время суток,stage-07
+photo.title,Фоторежим,stage-07
+photo.watermark,Водяной знак,stage-07
+quality.high,Высокое,stage-07
+quality.low,Низкое,stage-07
+quality.medium,Среднее,stage-07
+quality.ultra,Ультра,stage-07
+save.autosave,Автосохранение,stage-07
+save.autosaveInterval,Интервал автосохранения,stage-07
+save.checksumBad,Несовпадение контрольной суммы снимка,stage-07
+save.checksumOk,Перемотка к тику {0},stage-07
+save.delete,Удалить,stage-07
+save.empty,Пусто,stage-07
+save.export,Экспорт,stage-07
+save.failed,Ошибка: {0},stage-07
+save.generation,Возраст мира,stage-07
+save.import,Импорт,stage-07
+save.load,Загрузить,stage-07
+save.loaded,Загружено {0},stage-07
+save.name,Название мира,stage-07
+save.now,Сохранить,stage-07
+save.rewind,Перемотка,stage-07
+save.rewind.help,Загружает ближайший снимок и воспроизводит мир до этого момента,stage-07
+save.slot,Слот,stage-07
+save.title,Миры,stage-07
+save.unsaved,Есть несохранённые изменения,stage-07
+save.written,Сохранено в {0},stage-07
+season.autumn,Осень,stage-07
+season.spring,Весна,stage-07
+season.summer,Лето,stage-07
+season.winter,Зима,stage-07
+settings.ambient,Окружение,stage-07
+settings.autosave,Автосохранение,stage-07
+settings.locale,Язык,stage-07
+settings.master,Общая громкость,stage-07
+settings.muted,Без звука,stage-07
+settings.quality,Качество,stage-07
+settings.showPerf,Показывать счётчик производительности,stage-07
+settings.title,Настройки,stage-07
+settings.ui,Интерфейс,stage-07
+species.anatomy,Анатомия,stage-07
+species.declining,Сокращается,stage-07
+species.diet,Питание,stage-07
+species.extinct,Вымер,stage-07
+species.population,Популяция,stage-07
+species.range,Ареал,stage-07
+species.stable,Стабилен,stage-07
+species.thriving,Процветает,stage-07
+species.title,Виды,stage-07
+species.traits,Признаки,stage-07
+stage.adult,Взрослый,stage-07
+stage.juvenile,Юный,stage-07
+stage.old,Старый,stage-07
+stage.seed,Эмбрион,stage-07
+stats.avgTraits,Средние признаки,stage-07
+stats.biomass,Биомасса,stage-07
+stats.births,Рождения,stage-07
+stats.deaths,Смерти,stage-07
+stats.diversity,Разнообразие,stage-07
+stats.export,Экспорт CSV,stage-07
+stats.exportDone,Экспортировано в {0},stage-07
+stats.extinctions,Вымирания,stage-07
+stats.title,Показатели мира,stage-07
+status.dead,Мёртв,stage-07
+status.dehydrated,Обезвоживание,stage-07
+status.dormant,Спячка,stage-07
+status.exhausted,Истощение,stage-07
+status.freezing,Замерзает,stage-07
+status.overheating,Перегрев,stage-07
+status.panicked,Паника,stage-07
+status.starving,Голод,stage-07
+time.pause,Пауза,stage-07
+time.resume,Продолжить,stage-07
+time.scrub,Перемотка,stage-07
+time.scrub.progress,Перемотка {0}%,stage-07
+time.scrub.target,Целевой тик {0},stage-07
+tree.extinction,Вымирание,stage-07
+tree.speciation,Видообразование,stage-07
+tree.timeAxis,Время →,stage-07
+tree.title,Древо эволюции,stage-07
+tree.zoomHint,"Щёлкните узел, чтобы перейти к виду",stage-07
+ui.apply,Применить,stage-07
+ui.cancel,Отмена,stage-07
+ui.close,Закрыть,stage-07
+ui.none,Нет,stage-07
+ui.ok,ОК,stage-07
+ui.reset,Сброс,stage-07
+ui.unknown,Неизвестно,stage-07
+unit.celsius,°C,stage-07
+unit.count,шт,stage-07
+unit.fraction,доля,stage-07
+unit.mm,мм,stage-07
+unit.mps,м/с,stage-07
+unit.none,"",stage-07
+unit.relative,отн,stage-07
+weather.blizzard,Метель,stage-07
+weather.clear,Ясно,stage-07
+weather.coldwave,Холод,stage-07
+weather.drought,Засуха,stage-07
+weather.fog,Туман,stage-07
+weather.front,Фронт,stage-07
+weather.heatwave,Жара,stage-07
+weather.storm,Шторм,stage-07

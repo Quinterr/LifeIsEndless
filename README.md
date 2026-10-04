@@ -103,7 +103,7 @@ It writes metrics, events, phylogeny, energy-audit CSVs and a JSON summary per s
 | 04 | Genome & morphogenesis — genome, development, low-poly meshes, viewer | ✅ done (`stage-04-genome`) |
 | 05 | Creature life — needs/behavior/locomotion/ecology loop | ✅ done (`stage-05-life`) |
 | 06 | Ecology & evolution | implemented; Unity compile/tests pending (`stage-06-evolution`) |
-| 07 | Product UX & optimization | planned |
+| 07 | Product UX & optimization | implemented; Unity compile/tests pending (`stage-07-product`) |
 
 ## Project layout
 
@@ -115,9 +115,17 @@ Assets/
 │   └── StressWorld.unity       stage-05 stress benchmark scene (10,000 organisms + metrics)
 ├── Ecosphere/
 │   ├── Core/Simulation/       pure C#: RNG, calendar, accumulator, SimLog,
-│   │                          genetics math (catalog, development, L-system, JSON)
+│   │                          genetics math (catalog, development, L-system, JSON),
+│   │                          Product/ (localization, overlays, audio math, saves,
+│   │                          quality tiers, version stamp, feed aggregation)
 │   ├── Core/ECS/              DOTS: components, groups, TimeSystem, events, save seam,
-│   │                          genome components + organism factory
+│   │                          genome components + organism factory, God/ (god tools +
+│   │                          time scrub), Time/WorldEpoch
+│   ├── God/                   god-tool systems (request execution, climate forcing bake)
+│   ├── Persistence/           world snapshot codec, save ring/slots/export, rewind
+│   ├── UX/                    product layer: HUD + panels (UI Toolkit), cinematic camera,
+│   │                          overlays host, god/save/settings panels, photo mode,
+│   │                          generative audio, quality controller, crash guard
 │   ├── Genetics/              PhenotypeUpdateSystem (morphogenesis, tick-gated)
 │   ├── Authoring/             bootstrap + ScriptableObject configs (incl. GeneCatalog)
 │   ├── Presentation/          SimHud + input + organism mesh builder/pool/viewer
