@@ -39,10 +39,12 @@ and forwards input; it never mutates simulation state other than `TimeControl`.
 
 | asmdef | Contents | References |
 |---|---|---|
-| `Ecosphere.Core.Simulation` | RngState/SimRandom, CalendarMath, TimeAccumulator, SimLog | **none** (`noEngineReferences: true`) |
-| `Ecosphere.Core.ECS` | components, groups, systems, events, save seam | Core.Simulation, Unity.Entities, Collections, Mathematics, Burst |
-| `Ecosphere.Authoring` | WorldBootstrap, WorldSettings/GameBalance SOs, WorldSettingsAuthoring baker | Core.*, Entities, Entities.Hybrid, Transforms |
-| `Ecosphere.Presentation` | SimHud (IMGUI), TimeControlInput (legacy Input) | Core.*, Entities |
+| `Ecosphere.Core.Simulation` | RngState/SimRandom, CalendarMath, TimeAccumulator, SimLog; stage 04: gene catalog, development math (`GenomeMath`), L-system, `GenomeJson` | **none** (`noEngineReferences: true`) |
+| `Ecosphere.Core.ECS` | components, groups, systems, events, save seam; stage 04: genome components, `OrganismFactory`, `GeneCatalogBlob` | Core.Simulation, Unity.Entities, Collections, Mathematics, Burst |
+| `Ecosphere.Planet` | stage 02–03: icosphere, cells, `SunSystem`, `ClimateSystem`, `IClimateSampler` | Core.*, Entities, Collections, Mathematics, Burst |
+| `Ecosphere.Genetics` | stage 04: `PhenotypeUpdateSystem` (morphogenesis; runs after `ClimateSystem`) | Core.*, Ecosphere.Planet, Entities, Collections, Mathematics, Burst |
+| `Ecosphere.Authoring` | WorldBootstrap, WorldSettings/GameBalance SOs, WorldSettingsAuthoring baker; stage 04: `GeneCatalogAsset` + `GeneticsBootstrap` (SO → BlobAsset seam) | Core.*, Entities, Entities.Hybrid, Transforms, Ecosphere.Planet |
+| `Ecosphere.Presentation` | SimHud (IMGUI), TimeControlInput (legacy Input); stage 04: `Presentation/Genetics` — mesh builder/validator/pool + `OrganismViewerController` | Core.*, Entities, Ecosphere.Planet |
 | `Ecosphere.Tests` | EditMode + PlayMode tests, perf tests | all of the above + TestRunner + PerformanceTesting |
 
 ## 3. System update order (explicit slots)
@@ -145,13 +147,18 @@ the first update.
 ```
 Assets/Ecosphere/
 ├── Core/Simulation     pure logic (RNG, calendar, accumulator, log)      [stage 01 ✓]
+│                        + genetics math (catalog, development, L-system, JSON) [04 ✓]
 ├── Core/ECS            components/systems/groups/events/save seam         [stage 01 ✓]
+│                        + genome components, OrganismFactory              [04 ✓]
+├── Genetics/           PhenotypeUpdateSystem (morphogenesis)             [stage 04 ✓]
 ├── Authoring           bootstrap + ScriptableObject configs               [stage 01 ✓]
+│                        + GeneCatalogAsset → BlobAsset seam               [04 ✓]
 ├── Presentation        HUD + input (camera, overlays, UI Toolkit in 07)   [stage 01 ✓]
+│                        + Genetics/ mesh builder, pool, OrganismViewer    [04 ✓]
 ├── Config/             committed WorldSettings.asset, GameBalance.asset   [stage 01 ✓]
-├── Planet/             icosphere, cells, rotation/tilt                    [stage 02]
-├── Climate/            per-cell climate fields, weather events            [stage 03]
-├── Genetics/           genome, inheritance, morphogenesis                 [stage 04]
+│                        + GeneCatalog.asset                                [04 ✓]
+├── Planet/             icosphere, cells, rotation/tilt, climate          [stages 02–03 ✓]
+├── Climate/            (README stub; climate code lives in Planet/Runtime)
 ├── Life/               needs, behavior, locomotion, plant growth          [stage 05]
 ├── Ecology/            food web, reproduction, speciation, phylogeny      [stage 06]
 └── UX/                 camera rig, UI Toolkit, inspectors, god tools      [stage 07]

@@ -75,38 +75,39 @@ allocation-free 1000-tick performance smoke test.
 
 | Stage | Scope | Status |
 |---|---|---|
-| 01 | Foundation — project, DOTS, time, RNG, architecture | ✅ done (`stage-01-foundation`) |
-| 02 | Planet & time — icosphere from seed, surface cells, rotation/tilt | next |
-| 03 | Climate | planned |
-| 04 | Genome & morphogenesis | planned |
-| 05 | Creature life — needs/behavior | planned |
+| 01 | Foundation — project, DOTS, time, RNG, architecture | ✅ done |
+| 02 | Planet & time — icosphere from seed, surface cells, rotation/tilt | ✅ done |
+| 03 | Climate — per-cell fields, weather events, `IClimateSampler` | ✅ done |
+| 04 | Genome & morphogenesis — genome, development, low-poly meshes, viewer | ✅ done (`stage-04-genome`) |
+| 05 | Creature life — needs/behavior | next |
 | 06 | Ecology & evolution | planned |
 | 07 | Product UX & optimization | planned |
 
-### What stage 02 must do
+### What stage 05 must do
 
-Generate the planet from `WorldSettingsData.WorldSeed`: icosphere subdivision to
-10k–50k surface cells with elevation, water/land, polar ice, biomes, soil moisture,
-fertility, biomass and detritus fields; rotation + axial tilt driving the day/night
-terminator visible from the orbit camera; insolation per cell from
-`GameTime.DayFraction`/`Season` (using `CalendarMath.SeasonAtLatitude` for the southern
-hemisphere). Systems land in `Assets/Ecosphere/Planet/` as a new group after
-`EventSystemGroup`; pure generation math stays in `Core.Simulation`; rendering stays
-stubbed (stage 07). Acceptance includes deterministic worlds per seed and the existing
-test suite staying green.
+Consume the stage-04 contracts: the behavior-weight blob + instinct priors
+(MLP utility AI), the diet vector, metabolism params, and the derived
+locomotion params (§4.5 of `Docs/genetics.md`). Needs: energy, hydration,
+thermal comfort, rest, safety, social, reproduction, curiosity — all sampled
+through `IClimateSampler` and the per-organism `EnvironmentEMAData`.
 
 ## Project layout
 
 ```
 Assets/
-├── Scenes/Main.unity            bootstrap scene (camera + WorldBootstrap/HUD/input)
+├── Scenes/Main.unity            planet scene (camera + bootstrap + overlays)
+├── Scenes/OrganismViewer.unity  stage-04 debug scene (specimen + gallery viewer)
 ├── Ecosphere/
-│   ├── Core/Simulation/         pure C#: RNG, calendar, accumulator, SimLog
-│   ├── Core/ECS/                DOTS: components, groups, TimeSystem, events, save seam
-│   ├── Authoring/               WorldBootstrap + ScriptableObject configs + baker
-│   ├── Presentation/            SimHud (IMGUI) + TimeControlInput
-│   ├── Config/                  WorldSettings.asset, GameBalance.asset
-│   └── Planet/ Climate/ Genetics/ Life/ Ecology/ UX/   ← stage stubs
+│   ├── Core/Simulation/         pure C#: RNG, calendar, accumulator, SimLog,
+│   │                            genetics math (catalog, development, L-system, JSON)
+│   ├── Core/ECS/                DOTS: components, groups, TimeSystem, events, save seam,
+│   │                            genome components + organism factory
+│   ├── Genetics/                PhenotypeUpdateSystem (morphogenesis, tick-gated)
+│   ├── Authoring/               bootstrap + ScriptableObject configs (incl. GeneCatalog)
+│   ├── Presentation/            SimHud + input + organism mesh builder/pool/viewer
+│   ├── Config/                  WorldSettings.asset, GameBalance.asset, GeneCatalog.asset
+│   ├── Planet/                  icosphere, cells, sun, climate (stages 02–03)
+│   └── Life/ Ecology/ UX/       ← stage stubs
 └── Tests/                       EditMode + PlayMode + performance tests
 ```
 

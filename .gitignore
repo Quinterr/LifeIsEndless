@@ -69,6 +69,10 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+# Stage-04 debug artifact: organism viewer genome export (regenerated on demand)
+/[Aa]ssets/[Ss]treamingAssets/organism_genome.json
+/[Aa]ssets/[Ss]treamingAssets/organism_genome.json.meta
+
 # Ecosphere: local scratch, tool caches, local-only editor tweaks
 /.idea/
 /.vscode/

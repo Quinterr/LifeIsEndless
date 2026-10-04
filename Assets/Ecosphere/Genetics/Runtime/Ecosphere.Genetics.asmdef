@@ -1,0 +1,22 @@
+{
+    "name": "Ecosphere.Genetics",
+    "rootNamespace": "Ecosphere.Genetics",
+    "references": [
+        "Ecosphere.Core.Simulation",
+        "Ecosphere.Core.ECS",
+        "Ecosphere.Planet",
+        "Unity.Burst",
+        "Unity.Collections",
+        "Unity.Entities",
+        "Unity.Mathematics"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
