@@ -40,10 +40,23 @@ namespace Ecosphere.Authoring
         [System.Serializable]
         public class EvolutionSection
         {
-            [Tooltip("Placeholder — filled by stage 06 (Ecology & Evolution).")]
-            public float MutationRateScale = 1f;
-            [Tooltip("Placeholder — filled by stage 06 (Ecology & Evolution).")]
-            public float SelectionPressure = 1f;
+            [Tooltip("Scales all point-mutation probabilities during inheritance.")]
+            [Range(0f, 10f)] public float MutationRateScale = 1f;
+            [Tooltip("Weights mate-display and mate-condition differences in non-scripted courtship selection.")]
+            [Range(0f, 4f)] public float SelectionPressure = 1f;
+            [Tooltip("Per-chromosome chance of a bounded duplication or deletion per conception.")]
+            [Range(0f, 0.1f)] public float StructuralMutationChance = 0.0005f;
+            [Tooltip("Maximum normalized genome distance for mating and species compatibility.")]
+            [Range(0.01f, 1f)] public float CompatibilityThreshold = 0.38f;
+            [Tooltip("Minimum trait-centroid drift before a regional population can fork.")]
+            [Range(0.01f, 1f)] public float SpeciationDriftThreshold = 0.12f;
+            [Tooltip("Minimum fraction of cross-region genome pairs that must be incompatible to fork.")]
+            [Range(0f, 1f)] public float SpeciationFailureFraction = 0.6f;
+            [Min(2)] public int MinimumSpeciationPopulation = 8;
+            [Min(1)] public int MaxConceptionsPerTick = 8;
+            [Min(1)] public int MaxEggUpdatesPerTick = 32;
+            [Min(64)] public int MaxTrackedEvents = 4096;
+            [Min(256)] public int MaxTrackedMetrics = 65536;
         }
 
         [System.Serializable]

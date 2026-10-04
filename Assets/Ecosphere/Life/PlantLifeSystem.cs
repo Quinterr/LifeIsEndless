@@ -152,8 +152,15 @@ namespace Ecosphere.Life
                     plant.AccumulatedBiomass -= damage;
                     if (plant.AccumulatedBiomass < 0f && stage == LifeStage.Senescent)
                     {
-                        // Plant dies of exposure / frost / drought
-                        ecb.AddComponent(e, new DeadTag { Cause = CauseOfDeath.ExposureFreezing });
+                        CauseOfDeath cause = climate.SoilMoisture < 0.12f
+                            ? CauseOfDeath.Drought
+                            : climate.EffectiveTemperature < p.TemperatureOptimum - p.TemperatureTolerance
+                                ? CauseOfDeath.ExposureFreezing
+                                : climate.EffectiveTemperature > p.TemperatureOptimum + p.TemperatureTolerance
+                                    ? CauseOfDeath.ExposureOverheating
+                                    : climate.Storminess > 0.85f
+                                        ? CauseOfDeath.SevereStorm : CauseOfDeath.Drought;
+                        ecb.AddComponent(e, new DeadTag { Cause = cause });
                     }
                 }
 

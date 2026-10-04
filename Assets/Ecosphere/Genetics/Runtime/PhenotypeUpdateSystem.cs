@@ -121,9 +121,14 @@ namespace Ecosphere.Genetics
                 GeneKingdom kingdom = em.GetComponentData<GenomeHeader>(e).Kingdom;
                 for (int g = 0; g < geneCount; g++)
                 {
-                    ushort t = _geneScratch[g].TypeId;
-                    if (t == GeneId.DevelopmentRate) devRate = catalog.MapToRange(t, _geneScratch[g].Value);
-                    else if (t == GeneId.SeasonalGrowthGate) seasonalGate = catalog.MapToRange(t, _geneScratch[g].Value);
+                    Gene gene = _geneScratch[g];
+                    ushort t = gene.TypeId;
+                    if (t != GeneId.DevelopmentRate && t != GeneId.SeasonalGrowthGate) continue;
+                    float expressed = GenomeEvolutionMath.ExpressAllele(
+                        gene.Value, gene.Dominance, catalog.Get(t).Default);
+                    float mapped = catalog.MapToRange(t, expressed);
+                    if (t == GeneId.DevelopmentRate) devRate = mapped;
+                    else seasonalGate = mapped;
                 }
 
                 float tickAdvance = 1f * math.clamp(devRate, 0.05f, 3f);

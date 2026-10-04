@@ -267,7 +267,12 @@ namespace Ecosphere.Presentation.Genetics
                     // Start the gallery at 70% of lifespan (adult, fully expressed).
                     float lifespan = 3600f;
                     foreach (var g in genes)
-                        if (g.TypeId == GeneId.Lifespan) lifespan = Math.Max(200f, _catalog.MapToRange(GeneId.Lifespan, g.Value));
+                        if (g.TypeId == GeneId.Lifespan)
+                        {
+                            float expressed = GenomeEvolutionMath.ExpressAllele(
+                                g.Value, g.Dominance, _catalog.Get(GeneId.Lifespan).Default);
+                            lifespan = Math.Max(200f, _catalog.MapToRange(GeneId.Lifespan, expressed));
+                        }
                     ulong ticks = (ulong)(lifespan * 0.7f);
                     _em.SetComponentData(e, new OrganismAge { Ticks = ticks });
                     _em.SetComponentData(e, new OrganismDevAge { Ticks = (float)ticks });
@@ -587,8 +592,9 @@ namespace Ecosphere.Presentation.Genetics
             foreach (var g in _specimenGenes)
             {
                 GeneDefinition def = _catalog.Get(g.TypeId);
-                float mapped = _catalog.MapToRange(g.TypeId, g.Value);
-                GUILayout.Label($"{def.Name,-22} {g.Value,0.00} → {mapped,0.00}  ({def.Min:0.##}..{def.Max:0.##})");
+                float expressed = GenomeEvolutionMath.ExpressAllele(g.Value, g.Dominance, def.Default);
+                float mapped = _catalog.MapToRange(g.TypeId, expressed);
+                GUILayout.Label($"{def.Name,-22} allele {g.Value:0.00} dom {g.Dominance:0.00} → {mapped:0.00}  ({def.Min:0.##}..{def.Max:0.##})");
             }
             GUILayout.EndScrollView();
         }

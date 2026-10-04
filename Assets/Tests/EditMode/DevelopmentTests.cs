@@ -94,6 +94,36 @@ namespace Ecosphere.Tests.EditMode
         }
 
         [Test]
+        public void Dominance_ControlsPhenotypeExpressionAgainstCatalogReference()
+        {
+            var recessive = new List<Gene>(FixedAnimalGenes);
+            var dominant = new List<Gene>(FixedAnimalGenes);
+            for (int i = 0; i < FixedAnimalGenes.Length; i++)
+            {
+                if (FixedAnimalGenes[i].TypeId != GeneId.TemperatureTolerance) continue;
+                Gene low = recessive[i];
+                low.Value = 0.9f;
+                low.Dominance = 0f;
+                recessive[i] = low;
+                Gene high = dominant[i];
+                high.Value = 0.9f;
+                high.Dominance = 1f;
+                dominant[i] = high;
+                break;
+            }
+            var ema = Ema(20f, 0.5f, 2f, 0.5f);
+            float lifespan = Catalog.MapToRange(GeneId.Lifespan,
+                Gene(FixedAnimalGenes, GeneId.Lifespan).Value);
+            DevelopmentOutput recessiveOutput = GenomeMath.Compute(Catalog,
+                new DevelopmentInput(recessive.ToArray(), GeneKingdom.Animal, lifespan * 0.75f, ema));
+            DevelopmentOutput dominantOutput = GenomeMath.Compute(Catalog,
+                new DevelopmentInput(dominant.ToArray(), GeneKingdom.Animal, lifespan * 0.75f, ema));
+
+            Assert.Less(recessiveOutput.Phenotype.TemperatureTolerance,
+                dominantOutput.Phenotype.TemperatureTolerance);
+        }
+
+        [Test]
         public void StageGates_BehaviorGenesSilentBeforeAdulthood()
         {
             var ema = Ema(15f, 0.6f, 2f, 0.5f);

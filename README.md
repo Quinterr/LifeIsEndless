@@ -7,6 +7,8 @@ pressure across day/night cycles and 15-day seasonal quarters.
 - 📄 **Project brief** (frozen vision): [`Docs/project-brief.md`](Docs/project-brief.md)
 - 🏗 **Architecture & rules**: [`Docs/architecture.md`](Docs/architecture.md)
 - 🧬 **Life system documentation**: [`Docs/life.md`](Docs/life.md)
+- 🌱 **Ecology & evolution (Stage 06)**: [`Docs/evolution.md`](Docs/evolution.md)
+- 📊 **Performance budgets and measurement status**: [`Docs/performance.md`](Docs/performance.md)
 - 🤝 **Stage workflow & commit rules**: [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
 ## Requirements
@@ -59,10 +61,24 @@ Coverage:
 - Calendar math, seasonal boundaries, southern hemisphere inversion.
 - Climate simulation & weather event logging.
 - Morphogenesis & genome development pipeline (`GenomeMath`, `OrganismMeshBuilder`).
-- Creature life (Stage 05): needs drain & refills, utility AI scoring preferences,
-  Burst MLP neural network evaluation, sphere great-circle locomotion, plant
-  photosynthesis & seasonal biomass allocation, winter dormancy, predation handshake,
-  detritus decay to soil fertility, 72h playmode stability, and 10k organism performance budgets.
+- Creature life (Stage 05): needs drain/refills, utility AI, sphere locomotion, plant
+  growth, resource exchange, predation, and death cleanup.
+- Ecology & evolution (Stage 06): deterministic sexual/asexual inheritance, dominance,
+  structural mutation caps, lineage/DAG/extinction bookkeeping, cold/drought/predator
+  trait trends, controlled speciation, the 100-year Default harness, energy-ledger
+  closure, and `EvolutionQuery` snapshots.
+- Performance budgets are documented as targets only; see `Docs/performance.md` for
+  the required Unity profiling protocol and current measurement status.
+
+The portable Stage 06 batch harness links only the pure `Core/Simulation` sources and
+can run without Unity or external NuGet packages:
+
+```
+dotnet run --project Tools/EvolutionCli -- --scenario default --seed 42 --years 100 --out artifacts/default
+dotnet run --project Tools/EvolutionCli -- --all --out artifacts/all
+```
+
+It writes metrics, events, phylogeny, energy-audit CSVs and a JSON summary per scenario.
 
 ## Conventions (short version)
 
@@ -86,7 +102,7 @@ Coverage:
 | 03 | Climate — per-cell fields, weather events, `IClimateSampler` | ✅ done |
 | 04 | Genome & morphogenesis — genome, development, low-poly meshes, viewer | ✅ done (`stage-04-genome`) |
 | 05 | Creature life — needs/behavior/locomotion/ecology loop | ✅ done (`stage-05-life`) |
-| 06 | Ecology & evolution | planned |
+| 06 | Ecology & evolution | implemented; Unity compile/tests pending (`stage-06-evolution`) |
 | 07 | Product UX & optimization | planned |
 
 ## Project layout

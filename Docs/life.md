@@ -6,7 +6,7 @@ Stage 05 breathes life into the ecosphere:
 - **Plants photosynthesize and grow**: Insulated by daylight, cloud cover, and seasonal warmth, plants accumulate biomass, allocate resources to roots, stems, leaves, and fruits, drop leaves during winter dormancy, and sustain damage from frost, drought, and hail.
 - **Closed Ecosystem Loop**:
   $$\text{Sun} \longrightarrow \text{Plants} \longrightarrow \text{Herbivores} \longrightarrow \text{Predators} \longrightarrow \text{Detritus} \longrightarrow \text{Soil Fertility} \longrightarrow \text{Plants}$$
-- **Zero GC Allocations**: All simulation systems utilize Burst-compatible structs, NativeArrays, and IJobEntity/IJobParallelFor patterns.
+- **Performance status**: Systems are tick-gated and mostly ECS data-oriented, but Stage 06 adds managed candidate/grouping work and temporary NativeArray snapshots. Allocation and timing budgets are targets, not measured results; see [`performance.md`](performance.md).
 
 ---
 
@@ -62,7 +62,7 @@ $$\text{Score}(\text{action}) = \sum (\text{NeedUrgency} \times \text{Weight}) \
 - `Explore`: Traveling toward novel or curiosity-driven regions.
 - `Migrate`: Long-range seasonal comfort gradient seeking.
 - `Socialize`: Grouping with nearby herd members.
-- `SeekMate`: Stage 06 courtship stub.
+- `SeekMate`: Locates a compatible conspecific and begins a deterministic courtship interval before conception.
 - `Bask`: Ectotherm sunbathing to raise body temperature.
 - `TakeShelter`: Seeking calm neighboring cells during severe weather.
 
@@ -111,9 +111,5 @@ Burst-evaluated fixed net ($\le 24 \rightarrow 16 \rightarrow 15$):
 
 ---
 
-## 7. Stage 06 Reproduction Handoff
-Stage 05 prepares the foundational contracts for Stage 06 (Ecology & Evolution):
-1. `CellSeedBank` buffer accumulates seeds with wind/current dispersal offsets.
-2. `Reproduction` need urgency tracks readiness to mate.
-3. `SeekMate` utility action identifies compatible conspecific partners.
-4. Stage 06 will consume these buffers to implement crossover, mutation, mate selection, and speciation.
+## 7. Stage 06 Reproduction & Evolution
+Stage 06 is implemented in the current branch. Animal courtship/conception, gestation or egg incubation, parental care, seasonal plant pollination, seed dispersal/germination, genome inheritance, lineage/species history and annual metrics are documented in [`evolution.md`](evolution.md). The full Unity compile and test run still needs to be performed in the pinned editor.

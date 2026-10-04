@@ -68,7 +68,9 @@ namespace Ecosphere.Core.Simulation
             float sensitivity = 1f, stageShift = 0f, sizeMultiplier = 1f, developmentRate = 1f;
             foreach (Gene g in genes)
             {
-                float mapped = catalog.MapToRange(g.TypeId, g.Value);
+                GeneDefinition definition = catalog.Get(g.TypeId);
+                float expressed = GenomeEvolutionMath.ExpressAllele(g.Value, g.Dominance, definition.Default);
+                float mapped = catalog.MapToRange(g.TypeId, expressed);
                 switch (g.TypeId)
                 {
                     case GeneId.ExpressionSensitivity: sensitivity = mapped; break;
@@ -84,7 +86,9 @@ namespace Ecosphere.Core.Simulation
             float curveType = 0f, growthRate = 1f, lifespan = 3600f, burstAge = 0.25f;
             foreach (Gene g in genes)
             {
-                float mapped = catalog.MapToRange(g.TypeId, g.Value);
+                GeneDefinition definition = catalog.Get(g.TypeId);
+                float expressed = GenomeEvolutionMath.ExpressAllele(g.Value, g.Dominance, definition.Default);
+                float mapped = catalog.MapToRange(g.TypeId, expressed);
                 switch (g.TypeId)
                 {
                     case GeneId.GrowthCurveType: curveType = mapped; break;
@@ -129,8 +133,10 @@ namespace Ecosphere.Core.Simulation
             float tempTolerance = catalog.MapToRange(GeneId.TemperatureTolerance, 0.5f);
             foreach (Gene g in genes)
             {
-                if (g.TypeId == GeneId.TemperatureOptimum) tempOptimum = catalog.MapToRange(g.TypeId, g.Value);
-                else if (g.TypeId == GeneId.TemperatureTolerance) tempTolerance = catalog.MapToRange(g.TypeId, g.Value);
+                GeneDefinition definition = catalog.Get(g.TypeId);
+                float expressed = GenomeEvolutionMath.ExpressAllele(g.Value, g.Dominance, definition.Default);
+                if (g.TypeId == GeneId.TemperatureOptimum) tempOptimum = catalog.MapToRange(g.TypeId, expressed);
+                else if (g.TypeId == GeneId.TemperatureTolerance) tempTolerance = catalog.MapToRange(g.TypeId, expressed);
             }
 
             foreach (Gene g in genes)
@@ -138,7 +144,8 @@ namespace Ecosphere.Core.Simulation
                 GeneDefinition def = catalog.Get(g.TypeId);
                 if (def.Id != g.TypeId || (def.Kingdom & kingdom) == 0) continue;
 
-                float mapped = def.Min + g.Value * (def.Max - def.Min);
+                float expressed = GenomeEvolutionMath.ExpressAllele(g.Value, g.Dominance, def.Default);
+                float mapped = def.Min + expressed * (def.Max - def.Min);
                 float gate = MorphogenMath.StageGate(def.Group, ageFraction, stageShift);
                 if (gate <= 0.0001f) continue; // gene not expressed yet at this age
 

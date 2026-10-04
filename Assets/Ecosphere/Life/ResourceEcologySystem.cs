@@ -70,10 +70,14 @@ namespace Ecosphere.Life
                     resources[c] = cellRes;
                 }
 
-                // Log DeathRecord for metrics & ecology inspection
+                // Log a stable id/species tombstone as well as the immediate cause.
+                ulong organismId = em.HasComponent<OrganismIdentity>(e)
+                    ? em.GetComponentData<OrganismIdentity>(e).OrganismId : 0UL;
+                uint speciesId = em.HasComponent<SpeciesIdentity>(e)
+                    ? em.GetComponentData<SpeciesIdentity>(e).SpeciesId : 0u;
                 if (deathRecords.Length >= 512)
                 {
-                    deathRecords.RemoveAt(0); // ring buffer of death records
+                    deathRecords.RemoveAt(0); // bounded short-term diagnostic buffer
                 }
                 deathRecords.Add(new DeathRecord
                 {
@@ -81,7 +85,9 @@ namespace Ecosphere.Life
                     Cause = tag.Cause,
                     AgeTicks = age,
                     CellIndex = c,
-                    Kingdom = k
+                    Kingdom = k,
+                    OrganismId = organismId,
+                    SpeciesId = speciesId
                 });
 
                 // Destroy organism entity

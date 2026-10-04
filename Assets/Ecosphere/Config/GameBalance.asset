@@ -24,3 +24,12 @@ MonoBehaviour:
   Evolution:
     MutationRateScale: 1
     SelectionPressure: 1
+    StructuralMutationChance: 0.0005
+    CompatibilityThreshold: 0.38
+    SpeciationDriftThreshold: 0.12
+    SpeciationFailureFraction: 0.6
+    MinimumSpeciationPopulation: 8
+    MaxConceptionsPerTick: 8
+    MaxEggUpdatesPerTick: 32
+    MaxTrackedEvents: 4096
+    MaxTrackedMetrics: 65536
