@@ -31,6 +31,7 @@
 ExportedObj/
 .consulo/
 *.csproj
+!/Tools/EvolutionCli/EvolutionCli.csproj
 *.unityproj
 *.sln
 *.suo
@@ -76,6 +77,10 @@ crashlytics-build.properties
 # Ecosphere: local scratch, tool caches, local-only editor tweaks
 /.idea/
 /.vscode/
+/Tools/EvolutionCli/bin/
+/Tools/EvolutionCli/obj/
+/artifacts/
+/evolution-output/
 *.swp
 .DS_Store
 __pycache__/

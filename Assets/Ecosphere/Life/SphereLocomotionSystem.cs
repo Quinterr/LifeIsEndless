@@ -27,6 +27,8 @@ namespace Ecosphere.Life
                 ComponentType.ReadOnly<PhenotypeData>(),
                 ComponentType.ReadOnly<LifeStageData>(),
                 ComponentType.ReadOnly<OrganismSize>(),
+                ComponentType.ReadOnly<OrganismIdentity>(),
+                ComponentType.ReadOnly<SpeciesIdentity>(),
                 ComponentType.Exclude<PlantLifeData>(),
                 ComponentType.Exclude<DeadTag>());
         }
@@ -59,6 +61,10 @@ namespace Ecosphere.Life
             var phenotypes = _locoQuery.ToComponentDataArray<PhenotypeData>(Allocator.Temp);
             var lifeStages = _locoQuery.ToComponentDataArray<LifeStageData>(Allocator.Temp);
             var sizes = _locoQuery.ToComponentDataArray<OrganismSize>(Allocator.Temp);
+            var identities = _locoQuery.ToComponentDataArray<OrganismIdentity>(Allocator.Temp);
+            var speciesIdentities = _locoQuery.ToComponentDataArray<SpeciesIdentity>(Allocator.Temp);
+            if (!em.HasBuffer<PopulationMovementEvent>(planetEntity)) em.AddBuffer<PopulationMovementEvent>(planetEntity);
+            DynamicBuffer<PopulationMovementEvent> movementEvents = em.GetBuffer<PopulationMovementEvent>(planetEntity);
 
             for (int i = 0; i < entities.Length; i++)
             {
@@ -71,6 +77,7 @@ namespace Ecosphere.Life
                 float size = sizes[i].Value;
 
                 int currentCell = orgCell.CellIndex;
+                int originalCell = currentCell;
                 if (currentCell < 0 || currentCell >= cells.Length) continue;
 
                 // Rest/sleep -> stationary
@@ -150,6 +157,15 @@ namespace Ecosphere.Life
                     if (bestNext != currentCell)
                     {
                         orgCell.CellIndex = bestNext;
+                        movementEvents.Add(new PopulationMovementEvent
+                        {
+                            Organism = entities[i],
+                            OrganismId = identities[i].OrganismId,
+                            SpeciesId = speciesIdentities[i].SpeciesId,
+                            FromCell = originalCell,
+                            ToCell = bestNext,
+                            Biomass = size
+                        });
                         currentCell = bestNext;
                     }
                 }
@@ -174,6 +190,8 @@ namespace Ecosphere.Life
             phenotypes.Dispose();
             lifeStages.Dispose();
             sizes.Dispose();
+            identities.Dispose();
+            speciesIdentities.Dispose();
         }
     }
 }

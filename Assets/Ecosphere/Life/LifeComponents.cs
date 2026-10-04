@@ -236,6 +236,9 @@ namespace Ecosphere.Life
         public uint PlantGenomeSeed;
         public float Viability;
         public ulong DispersalTick;
+        public Entity SeedEntity;
+        public int CellIndex;
+        public uint SpeciesId;
     }
 
     public enum CauseOfDeath : byte
@@ -247,7 +250,10 @@ namespace Ecosphere.Life
         ExposureOverheating = 4,
         Exhaustion = 5,
         Predation = 6,
-        SevereStorm = 7
+        SevereStorm = 7,
+        TerritorialCrowding = 8,
+        EggPredation = 9,
+        Drought = 10
     }
 
     /// <summary>
@@ -260,6 +266,8 @@ namespace Ecosphere.Life
         public ulong AgeTicks;
         public int CellIndex;
         public GeneKingdom Kingdom;
+        public ulong OrganismId;
+        public uint SpeciesId;
     }
 
     /// <summary>
